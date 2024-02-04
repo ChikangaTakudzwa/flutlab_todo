@@ -9,7 +9,7 @@ class TodoApp extends StatefulWidget {
 
   final NavigatorService navigatorService;
   final DatabaseLocal databaseLocal; // Add this line
-  
+
   const TodoApp({Key? key, required this.navigatorService, required this.databaseLocal}) : super(key: key);
 
   @override
@@ -23,7 +23,7 @@ class _TodoAppState extends State<TodoApp> {
   late TextEditingController _textController;
   late TextEditingController _descriptionController;
   
-  final List<Todo> _todos = [];
+  List<Todo> _todos = [];
 
   @override
   void initState() {
@@ -33,23 +33,22 @@ class _TodoAppState extends State<TodoApp> {
     _loadTodos();
   }
 
-  Future<void> _loadTodos() async {
-    final text = _textController.text.trim();
-    final description = _descriptionController.text.trim();
-
-    if (text.isNotEmpty) {
-      final newTodo = Todo(
-        DateTime.now().toString(), // You might want to generate a unique ID here
-        text,
-        description,
-      );
-
-      await widget.databaseLocal.add(newTodo);
-
-      // Fetch the updated list of todos and update the UI
-      await _loadTodos();
-    }
+  @override
+  void didUpdateWidget(covariant TodoApp oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    
+    // Fetch the updated list of todos whenever the widget updates
+    _loadTodos();
   }
+  
+  Future<void> _loadTodos() async {
+  // Fetch the updated list of todos from Xano
+  List<Todo> todos = await widget.databaseLocal.getAll();
+
+  setState(() {
+    _todos = todos;
+  });
+}
 
   @override
   Widget build(BuildContext context) {
