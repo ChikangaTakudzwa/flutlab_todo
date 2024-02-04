@@ -1,43 +1,37 @@
 import 'package:flutter/material.dart';
+import 'todo/presentation/todoui.dart';
+import 'todo/presentation/nav_service.dart';
+import 'todo/presentation/add_todo_screen.dart';
+import 'package:mytodoapp/todo/data/db/database_local.dart'; 
 
-void main() => runApp(MyApp());
+
+void main() {
+  final NavigatorService navigatorService = NavigatorService();
+  final DatabaseLocal databaseLocal = DatabaseLocalImpl();
+  runApp(MyApp(navigatorService: navigatorService));
+}
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final NavigatorService navigatorService;
+
+  
+  const MyApp({required this.navigatorService, Key? key}) : super(key: key);
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // Application name
-      title: 'Flutter Hello World',
-      // Application theme data, you can set the colors for the application as
-      // you want
+      navigatorKey: navigatorService.navigatorKey,
+      title: 'My Todo App',
       theme: ThemeData(
-        // useMaterial3: true,
         primarySwatch: Colors.blue,
       ),
-      // A widget which will be started on application startup
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => TodoApp(navigatorService: navigatorService, databaseLocal: DatabaseLocalImpl()),
+        '/addTodo': (context) => AddTodoScreen(databaseLocal: DatabaseLocalImpl()),
+      },
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  final String title;
-  const MyHomePage({super.key, required this.title});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        // The title text which will be shown on the action bar
-        title: Text(title),
-      ),
-      body: Center(
-        child: Text(
-          'Hello, World! TK',
-        ),
-      ),
-    );
-  }
-}
