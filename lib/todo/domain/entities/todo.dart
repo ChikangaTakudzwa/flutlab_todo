@@ -8,9 +8,9 @@ class Todo {
   // Factory method to create a Todo object from a JSON map
   factory Todo.fromJson(Map<String, dynamic> json) {
     return Todo(
-      json['id'],
-      json['text'],
-      json['description'],
+      json['id'].toString(),
+      json['text'].toString(),
+      json['description'].toString(),
     );
   }
 
